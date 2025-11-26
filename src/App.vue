@@ -2,6 +2,7 @@
 import WeatherSearch from './components/WeatherSearch.vue'
 import WeatherSummary from './components/WeatherSummary.vue'
 import DailyForecast from './components/DailyForecast.vue'
+import ActivityPlanner from './components/ActivityPlanner.vue'
 </script>
 
 <template>
@@ -25,16 +26,16 @@ import DailyForecast from './components/DailyForecast.vue'
         </section>
       </section>
 
+      <!-- PANEL ACTIVITÉS -->
       <aside class="panel panel-notes">
-        <h2>Notes rapides</h2>
+        <h2>Notes & activités</h2>
         <p class="notes-text">
-          Utilise le panneau météo pour décider : travailler dehors, aller à la salle,
-          prendre le vélo ou rester focus à l&apos;intérieur.
+          La météo te donne le contexte. Les activités t’aident à décider quoi faire :
+          sport, révisions, sorties, tâches perso…
         </p>
-        <p class="notes-small">
-          Ce projet montre l&apos;intégration d&apos;une API publique (Open‑Meteo) avec Vue 3 et Pinia :
-          gestion d&apos;état global, chargement, erreurs, affichage conditionnel.
-        </p>
+
+        <!-- Nouveau module -->
+        <ActivityPlanner />
       </aside>
     </main>
 
