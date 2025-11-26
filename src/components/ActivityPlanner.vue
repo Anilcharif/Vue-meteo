@@ -15,7 +15,7 @@ const handleSubmit = () => {
   label.value = ''
 }
 
-// Logique simple de “profil météo du jour”
+// Profil météo du jour
 const todayProfile = computed(() => {
   if (!weather.daily.length) return null
   const today = weather.daily[0]
@@ -24,9 +24,6 @@ const todayProfile = computed(() => {
 
   if (tMax == null || rain == null) return null
 
-  // On fait simple mais crédible :
-  // - froid ou pluie → plutôt indoor
-  // - doux et sec → plutôt outdoor
   if (rain > 2 || tMax < 8) {
     return {
       mode: 'indoor',
@@ -50,6 +47,7 @@ const todayProfile = computed(() => {
   }
 })
 
+// Activités suggérées selon météo
 const suggestedIndoor = computed(() =>
   todayProfile.value?.mode === 'indoor' || todayProfile.value?.mode === 'mix'
     ? activities.indoor
@@ -61,6 +59,18 @@ const suggestedOutdoor = computed(() =>
     ? activities.outdoor
     : []
 )
+
+// Liste compacte pour "Focus du jour"
+const focusList = computed(() => {
+  const list = []
+  if (suggestedIndoor.value.length) {
+    list.push(...suggestedIndoor.value.slice(0, 2))
+  }
+  if (suggestedOutdoor.value.length) {
+    list.push(...suggestedOutdoor.value.slice(0, 2))
+  }
+  return list
+})
 </script>
 
 <template>
@@ -85,9 +95,29 @@ const suggestedOutdoor = computed(() =>
       <button type="submit" class="activity-btn">Ajouter</button>
     </form>
 
-    <div v-if="todayProfile" class="activity-hint" :data-mode="todayProfile.mode">
+    <!-- SUGGESTION DU JOUR : TOUJOURS VISIBLE SI LA MÉTÉO EST CHARGÉE -->
+    <div
+      v-if="todayProfile"
+      class="activity-focus"
+      :data-mode="todayProfile.mode"
+    >
       <p class="activity-hint-title">{{ todayProfile.label }}</p>
       <p class="activity-hint-detail">{{ todayProfile.detail }}</p>
+
+      <ul v-if="focusList.length" class="activity-focus-list">
+        <li v-for="item in focusList" :key="item.id">
+          {{ item.label }}
+          <span class="activity-chip">
+            {{ item.type === 'indoor' ? 'intérieur' : 'extérieur' }}
+          </span>
+        </li>
+      </ul>
+
+      <p v-else class="activity-empty">
+        Ajoute au moins une activité marquée
+        <strong>intérieur</strong> ou <strong>extérieur</strong>
+        pour obtenir une suggestion précise.
+      </p>
     </div>
 
     <div class="activity-columns">
